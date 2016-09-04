@@ -1,0 +1,75 @@
+public LeaveCalculator CalculateAllowedLeaves(DateTime dateTime)
+        {
+            double casualAllowed = 0;
+            double sickAllowed = 0;
+            var day = dateTime.Day;
+            var month = dateTime.Month;
+            var year = dateTime.Year;
+            double casualAllow = 14;
+            double sickAllow = 7;
+            if (year - DateTime.Now.Year > 365)
+            {
+                month = 4;
+                day = 1;
+            }
+            double totalDays = (DateTime.Now- Convert.ToDateTime(dateTime)).TotalDays;
+            if (totalDays > 365)
+            {
+                month = 4;
+                day = 1;
+            }
+            if (month >= 4)
+            {
+                if (day <= 15)
+                {
+                    casualAllowed = (casualAllow / 12) * (12 - (month - 4));
+                    sickAllowed = (sickAllow / 12) * (12 - (month - 4));
+                }
+                else
+                {
+                    casualAllowed = (casualAllow / 12) * (12 - (month - 3));
+                    sickAllowed = (sickAllow / 12) * (12 - (month - 3));
+                }
+            }
+            else
+            {
+                if (day <= 15)
+                {
+                    casualAllowed = (casualAllow / 12) * (12 - (month + 8));
+                    sickAllowed = (sickAllow / 12) * (12 - (month + 8));
+                }
+                else
+                {
+                    casualAllowed = (casualAllow / 12) * (12 - (month + 9));
+                    sickAllowed = (sickAllow / 12) * (12 - (month + 9));
+                }
+            }
+            if (casualAllowed.ToString().Contains(".") == true)
+            {
+                string a = "0." + casualAllowed.ToString().Split('.')[1];
+                double b = Convert.ToDouble(a);
+                if (b != 0.5){casualAllowed = Convert.ToInt32(casualAllowed);}
+
+            }
+            else {
+                casualAllowed = Convert.ToInt32(casualAllowed);
+            }
+            if (sickAllowed.ToString().Contains(".") == true)
+            {
+                string a = "0." + sickAllowed.ToString().Split('.')[1];
+                double b = Convert.ToDouble(a);
+                if (b != 0.5) { sickAllowed = Convert.ToInt32(Math.Floor(sickAllowed)); }
+                if (b > 0.90) { sickAllowed = sickAllowed + 1; }
+
+            }
+            else
+            {
+                sickAllowed = Convert.ToInt32(Math.Floor(sickAllowed));
+            }
+            LeaveCalculator calculate = new LeaveCalculator
+            {
+                CasualLeave = casualAllowed,
+                SickLeave = sickAllowed
+            };
+            return calculate;
+        }
